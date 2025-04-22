@@ -69,13 +69,17 @@ public class Crypto {
      * @return The first valid generator discovered.
      */
     public static BigInteger getGenerator(int bits, BigInteger p) {
-        // TODO: Generate an initial g with the given bit width.
-        for (BigInteger g = ; g.compareTo(p) < 0; g.add(BigInteger.ONE)) {
+        BigInteger pMinusOne = p.subtract(BigInteger.ONE);
+        int maxBits = Math.min(bits, p.bitLength());
+        while (true) {
+            BigInteger g = getRandom(maxBits - 1, maxBits);
+            if (g.compareTo(BigInteger.TWO) < 0 || g.compareTo(pMinusOne) >= 0) {
+                continue;
+            }
             if (isValidG(g, p)) {
                 return g;
             }
         }
-        return null;
     }
 
     /**
